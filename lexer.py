@@ -41,16 +41,29 @@ regexExpressions = [
     (r'BAH-DEH-TAHN\b','NEW')
     ]
 
+def lex(self, inputText):
 
-
-
-
-
-
-
-
-
-
-
-
-]
+        lineNumber = 0
+        for line in inputText:
+            lineNumber += 1
+            position = 0
+            while position < len(line):
+                match = None
+                for tokenRegex in regexExpressions:
+                    pattern, tag = tokenRegex
+                    regex = re.compile(pattern)
+                    match = regex.match(line, position)
+                    if match:
+                        data = match.group(0)
+                        if tag:
+                            token = Token(tag, data, [lineNumber, position])
+                            self.tokens.append(token)
+                        break
+                if not match:
+                    print(inputText[position])
+                    print("no match")
+                    sys.exit(1)
+                else:
+                    position = match.end(0)
+        print("lexer: analysis successful!")
+        return self.tokens
