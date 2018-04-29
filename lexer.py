@@ -3,6 +3,9 @@ import sys
 from token import Token
 
 regexExpressions = [
+    (r'[ \n\t]+', None),
+    (r'#[^\n]*', None),
+
     (r'TSAS-KA\b\s','FOR'),
     (r'E-GADE\b\s','IF'),
     (r'CHAH-HO-OH-LHAN-IH\b\s','ELSE'),
@@ -36,9 +39,10 @@ regexExpressions = [
     (r'ESAT-TSANH\b\s','COMMENT'),
     (r'BAH-DEH-TAHN\b\s','NEW'),
     (r'[a-zA-Z]\w*\s', 'IDENTIFIER'),
+    (r'>>----> *\s', 'LCOMMENT'),
+    (r'<----<<\s', 'RCOMMENT'),
 
     ]
-
 class Lexer:
 
     def __init__(self):
