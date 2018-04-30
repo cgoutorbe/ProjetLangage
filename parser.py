@@ -66,10 +66,14 @@ class Parser:
 
     def parse_program(self):
         self.indentator.indent('Parsing Program')
-        self.expect('LCOMMENT')
-        name = self.expect('IDENTIFIER').value
-        self.expect('RCOMMENT')
 
+        #TODO: find a sequence defining a new program
+
+
+        #self.expect('LCOMMENT')
+        #print("before parse declaratio\n\n")
+        #name = self.expect('IDENTIFIER').value
+        #self.expect('RCOMMENT')
         decls=self.parse_declarations()
         stmts=self.parse_statements()
 
@@ -86,12 +90,14 @@ class Parser:
     def parse_declarations(self):
         tab=[]
         self.indentator.indent('Parsing Declarations')
-        while(self.show_next().kind in self.TYPE):
+        while(self.show_next().kind == 'NEW'):
+            print("*********PARSING DECLARATION********\n")
             tab.append(self.parse_declaration())
         self.indentator.dedent()
         return tab
 
     def parse_declaration(self):
+
         val = None
         self.indentator.indent('Parsing declaration')
 
@@ -104,7 +110,6 @@ class Parser:
             self.accept_it()
             val = self.expect('INTEGER_LIT').value
             self.expect('RBRACKET')
-
 
         while(self.show_next().kind == 'COMMA'):
             self.accept_it()
