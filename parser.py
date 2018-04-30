@@ -119,7 +119,6 @@ class Parser:
                 self.expect('INTEGER_LIT')
                 self.expect('RBRACKET')
 
-        self.expect('SEMICOLON')
 
         self.indentator.dedent()
         return(Declaration(name,typ,val))
