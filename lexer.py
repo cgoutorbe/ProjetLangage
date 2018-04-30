@@ -39,6 +39,8 @@ regexExpressions = [
     (r'ESAT-TSANH\b\s','COMMENT'),
     (r'BAH-DEH-TAHN\b\s','NEW'),
     (r'[a-zA-Z]\w*\s', 'IDENTIFIER'),
+
+
     (r'>>----> *\s', 'LCOMMENT'),
     (r'<----<<\s', 'RCOMMENT'),
 
@@ -47,19 +49,15 @@ class Lexer:
 
     def __init__(self):
         self.tokens = []
-
     def lex(self, inputText):
             #print(inputText)
-
             lineNumber = 0
             for line in inputText:
                 lineNumber += 1
                 position = 0
-
                 while position < len(line):
                     match = None
                     for tokenRegex in regexExpressions:
-
                         pattern, tag = tokenRegex
                         #print(pattern)
                         regex = re.compile(pattern)
