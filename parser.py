@@ -84,7 +84,7 @@ class Parser:
             print('WARNING: ' + str(self.errors) + ' errors found!')
         else:
             print('parser: syntax analysis successful!')
-        return Program(name,decls,stmts)
+        #return Program(name,decls,stmts)
 
 
     def parse_declarations(self):
@@ -98,13 +98,25 @@ class Parser:
 
     def parse_declaration(self):
 
+        #TODO: gérer les tableaux et les autres type que le int
+
         val = None
         self.indentator.indent('Parsing declaration')
+        self.accept_it()
 
         if self.show_next().kind in self.TYPE:
             typ = self.show_next().kind
             self.accept_it()
             name = self.expect('IDENTIFIER').value
+            if self.show_next().kind == 'ASSIGN':
+                self.accept_it()
+                val = self.expect('INTEGER_LIT').value
+
+            print("Declaration de la variable:",name,"de type",typ,"\n")
+
+
+
+        """ CAS DES TABLEAUX
 
         if self.show_next().kind == 'LBRACKET':
             self.accept_it()
@@ -118,35 +130,68 @@ class Parser:
                 self.accept_it()
                 self.expect('INTEGER_LIT')
                 self.expect('RBRACKET')
-
+        """
 
         self.indentator.dedent()
-        return(Declaration(name,typ,val))
+        #return(Declaration(name,typ,val))
 
 
     def parse_statements(self):
         self.indentator.indent('Parsing Statements')
         while(self.show_next().kind in self.STATEMENT_STARTERS):
-            parse_statement()
+            print("*********PARSING STATEMENT********\n")
+
+            self.parse_statement()
         self.indentator.dedent()
 
     def parse_statement(self):
         self.indentator.indent('Parsing Statement')
+        next = self.show_next().kind
+        if next == 'IF':
+            self.parse_if()
+        elif next == 'IDENTIFIER':
+            print(">>>> PARSING OPERATION\n")
+            self.parse_operation()
 
-        if show_next().kind == 'IF':
-            parse_if()
 
     def parse_if(self):
         self.accept_it()
-        self.expect('LPAREN')
         self.parse_expression()
-        self.expect('RPAREN')
 
     def parse_expression(self):
+        print(">>>> PARSING EXPRESSION\n")
+
+
+        self.expect('IDENTIFIER')
+        next = self.show_next().kind
+        if next in ['EQ','NEQ','DBAR','LTE','LT','GT','GTE','DAMPERSAND']:
+            self.accept_it()
+            if self.show_next().kind in ['IDENTIFIER','INTEGER_LIT']:
+                self.accept_it()
+
+
+
+
         pass
     def parse_conjunction(self):
         pass
     def parse_relation(self):
         pass
+    def parse_operation(self):
+        self.accept_it()
+        self.expect('ASSIGN')
+        if self.show_next().kind in ['INTEGER_LIT','IDENTIFIER']:
+            self.accept_it()
+            next = self.show_next().kind
+
+            if next == "ADD":
+                self.accept_it()
+            elif next == "MUL":
+                self.accept_it()
+            elif next == "DIV":
+                self.accept_it()
+        if self.show_next().kind in ['IDENTIFIER','INTEGER_LIT']:
+            self.accept_it()
+        print("Opération parsée\n")
 
         self.indentator.dedent()

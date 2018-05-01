@@ -39,6 +39,10 @@ regexExpressions = [
     (r'ESAT-TSANH\b\s','COMMENT'),
     (r'BAH-DEH-TAHN\b\s','NEW'),
     (r'[a-zA-Z]\w*\s', 'IDENTIFIER'),
+    (r'\d+\.\d+', 'FLOAT_LIT'),
+    (r'\d+', 'INTEGER_LIT'),
+    (r'\"[^\"]*\"', 'STRING_LIT'),
+    (r'\'[^\"]*\'', 'CHAR_LIT'),
 
 
     (r'>>----> *\s', 'LCOMMENT'),
