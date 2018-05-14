@@ -2,7 +2,7 @@ import sys
 import argparse
 from lexer import Lexer
 from parser import Parser
-#from AST import *
+from AST import *
 
 
 if __name__ == '__main__':
@@ -24,7 +24,9 @@ if __name__ == '__main__':
 
     lexer = Lexer()
     tokens = lexer.lex(testFileData)
-
+    ast = AST()
     verbose = True
-    parser = Parser(verbose)
+    parser = Parser(ast,verbose)
     parser.parse(tokens)
+
+    print(ast)

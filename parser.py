@@ -1,6 +1,6 @@
 import sys
 from indent import Indent
-#from AST import *
+from AST import *
 
 class Parser:
 
@@ -10,10 +10,11 @@ class Parser:
     MUL_OP = ['MUL', 'DIV']
     LITERAL = ['INTEGER_LIT', 'FLOAT_LIT', 'CHAR_LIT']
 
-    def __init__(self, verbose=False):
+    def __init__(self,ast, verbose=False):
         self.indentator = Indent(verbose)
         self.tokens = []
         self.errors = 0
+        self.ast = ast
 
     def show_next(self, n=1):
         try:
@@ -21,6 +22,7 @@ class Parser:
         except IndexError:
             print('ERROR: no more tokens left!')
             sys.exit(1)
+            return 0
 
     def expect(self, kind):
         actualToken = self.show_next()
@@ -84,7 +86,7 @@ class Parser:
             print('WARNING: ' + str(self.errors) + ' errors found!')
         else:
             print('parser: syntax analysis successful!')
-        #return Program(name,decls,stmts)
+        return Program(name,decls,stmts)
 
 
     def parse_declarations(self):
@@ -133,16 +135,20 @@ class Parser:
         """
 
         self.indentator.dedent()
-        #return(Declaration(name,typ,val))
+        return(Declaration(self.ast, name,typ,val))
 
 
     def parse_statements(self):
+        tab = []
         self.indentator.indent('Parsing Statements')
         while(self.show_next().kind in self.STATEMENT_STARTERS):
             print("*********PARSING STATEMENT********\n")
+            tab.append(self.parse_statement())
+
 
             self.parse_statement()
         self.indentator.dedent()
+        return tab
 
     def parse_statement(self):
         self.indentator.indent('Parsing Statement')
@@ -157,8 +163,11 @@ class Parser:
     def parse_if(self):
         self.accept_it()
         self.parse_expression()
+        return If(self.ast)
 
     def parse_expression(self):
+        self.indentator.indent('Parsing Expression')
+
         print(">>>> PARSING EXPRESSION\n")
 
 
@@ -168,11 +177,11 @@ class Parser:
             self.accept_it()
             if self.show_next().kind in ['IDENTIFIER','INTEGER_LIT']:
                 self.accept_it()
+                print("fin de la condition\n")
 
 
+        self.indentator.dedent()
 
-
-        pass
     def parse_conjunction(self):
         pass
     def parse_relation(self):
