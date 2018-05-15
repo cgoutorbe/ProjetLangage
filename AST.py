@@ -1,5 +1,3 @@
-
-
 class AST:
 
     def __init__(self):
@@ -15,7 +13,6 @@ class AST:
                 print(object.name)
                 print("\n|\n|\n|\n")
 
-
 class Program(AST):
 
     def __init__(self,name,declarations,statements):
@@ -24,12 +21,9 @@ class Program(AST):
         self.statements =  statements
         print("\n ====== création d'un objet Programme:",name)
 
-
     def addObject(self):
         self.ast.list.append(self)
         print("\n ====== object",self.name,"of type",self.type,"added to AST")
-
-
 
 
 class Declaration:
@@ -48,11 +42,14 @@ class Declaration:
         print("\n ====== object",self.name,"of type",self.type,"added to AST")
 
 
-class Statement:
+class update:
 
-    def __init__(self,name):
+    def __init__(self,ast,name,x,y):
         self.name = name
-        print("\n ====== création d'un objet Statement:",name)
+        self.coordx = x
+        self.coordy = y
+
+        print("\n ====== création d'un objet update:",name)
 
     def addObject(self):
         self.ast.list.append(self)
@@ -69,6 +66,15 @@ class Add:
 
     def __init__(self,name):
         self.name = name
+
+    def addObject(self):
+        self.ast.list.append(self)
+        print("\n ====== object",self.name,"of type",self.type,"added to AST")
+
+class While:
+    def __init__(self):
+        print("\n ====== création d'un IF Statement:")
+
 
     def addObject(self):
         self.ast.list.append(self)

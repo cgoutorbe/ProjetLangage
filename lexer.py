@@ -5,50 +5,54 @@ from token import Token
 regexExpressions = [
     (r'[ \n\t]+', None),
     (r'#[^\n]*', None),
-
     (r'TSAS-KA\b\s','FOR'),
     (r'E-GADE\b\s','IF'),
     (r'CHAH-HO-OH-LHAN-IH\b\s','ELSE'),
     (r'DOLA-ALTH-WHOSH\b\s','BREAK'),
     (r'AH-NAH-SOZI\b\s','WHILE'),
     (r'NA-DZAH\b\s','RETURN'),
-    (r'GINI\b\s','BOOL'),
-    (r'TAS-CHIZZIE\b\s','INT'),
-    (r'DA-HE-TIH-HI\b\s','CHAR'),
-    (r'JAY-SHO\b\s','FLOAT'),
-    (r'NE-AS-JAH\b\s','LONG'),
-    (r'GA-GIH\b\s','DOUBLE'),
-    (r'ASTAH\b\s','SIGNED'),
-    (r'WOH-TAH-DE-NE-IH\b\s','UNSIGNED'),
-    (r'TSE-E\b\s','VOID'),
-    (r'NAH-E-THLAI\b\s', 'LT'),
-    (r'BE-AL-DOH-CID-DA-HI\b\s', 'LTE'),
-    (r'NI-DI-DA-HI\b\s', 'GT'),
-    (r'BE-EL-DON-TS-QUODI\b\s', 'GTE'),
-    (r'JISH-CHA\b\s', 'ASSIGN'),
-    (r'ALTSEH-E-JAH-HE\b\s', 'ADDEQ'),
-    (r'A-YE-SHI\b\s', 'ADD'),
-    (r'AH-KIN-CIL-TOH\b\s', 'SUBEQ'),
-    (r'COH-TAH-GHIL-TLID\b\s', 'SUB'),
-    (r'AH-ZHOL\b\s', 'MUL'),
-    (r'NI-MA-SI\b\s', 'DIV'),
-    (r'KHAC-DA\b\s', 'NEQ'),
-    (r'OH-BEHI\b\s', 'DBAR'),
-    (r'NEH-HECHO-DA-NE\b\s','EQ'),
-    (r'NAH-GHIZI\b\s','DAMPERSAND'),
-    (r'ESAT-TSANH\b\s','COMMENT'),
+
+    #TYPES OF VEHICLE
+    (r'GINI\b\s','DIVE_BOMBER'),
+    (r'TAS-CHIZZIE\b\s','TORPEDO_PLANE'),
+    (r'DA-HE-TIH-HI\b\s','FIGHTER_PLANE'),
+    (r'JAY-SHO\b\s','BOMBER_PLANE'),
+    (r'NE-AS-JAH\b\s','OBS_PLANE'),
+    (r'GA-GIH\b\s','PATROL_PLANE'),
+    (r'ASTAH\b\s','TRANSPORT'),
+    (r'LO-TSO\b\s','BATTLESHIP'),
+    (r'CHAY-DA-GAHI\b\s','TANK'),
+
+    #TYPES OF GROUP
+    (r'DIN-NEH-IH\b\s','CORPS'),
+    (r'TACHEENE\b\s','BATTALION'),
+    (r'DEBEH-LI-ZINI\b\s','SQUAD'),
+
+    #TYPES OF RANK
+    (r'BIH-KEH-HE\b\s','COMMANDING_GENERAL'),
+    (r'ATSAH-BESH-LE-GAI\b\s','COLONEL'),
+
+    #TYPES OF ACTION
+    (r'TA-LA-HI-JIH\b\s','CONCENTRATION'),
+    (r'TA-AKWAI-I\b\s','HALT'),
+    (r'HA-A-SID-AL-SIZI-GIH\b\s','SCOUT'),
+    (r'ESAT-TSANH\b\s','RADAR'),
+    (r'A-NAH-NE-DZIN\b\s','ATTACK'),
+
+    (r'HA-GADE\b\s','MINE'),
+
+
+
     (r'BAH-DEH-TAHN\b\s','NEW'),
+
+    (r'THLA-GO-A-NAT-ZAH\b\s','CHANGE'),
+
     (r'[a-zA-Z]\w*\s', 'IDENTIFIER'),
-    (r'\d+\.\d+', 'FLOAT_LIT'),
-    (r'\d+', 'INTEGER_LIT'),
-    (r'\"[^\"]*\"', 'STRING_LIT'),
-    (r'\'[^\"]*\'', 'CHAR_LIT'),
+    (r'\d+', 'INTEGER_LIT')
 
-
-    (r'>>----> *\s', 'LCOMMENT'),
-    (r'<----<<\s', 'RCOMMENT'),
 
     ]
+
 class Lexer:
 
     def __init__(self):

@@ -4,7 +4,15 @@ from AST import *
 
 class Parser:
 
-    TYPE = ['INT', 'FLOAT', 'CHAR','LONG','BOOL','DOUBLE','VOID']
+    TYPE_PLANE = ['DIVE_BOMBER','TORPEDO_PLANE','FIGHTER_PLANE','BOMBER_PLANE','OBS_PLANE','PATROL_PLANE','TRANSPORT']
+    TYPE_TANK = ['TANK']
+    TYPE_WEAPON = ['MINE']
+    TYPE_ACTION = ['SCOUT','HALT','ATTACK']
+
+    TYPE = TYPE_PLANE + TYPE_TANK + TYPE_WEAPON
+
+
+
     STATEMENT_STARTERS = ['SEMICOLON', 'LBRACE', 'IDENTIFIER', 'IF', 'WHILE']
     REL_OP = ['LT', 'LTE', 'GT', 'GTE']
     MUL_OP = ['MUL', 'DIV']
@@ -77,7 +85,7 @@ class Parser:
         #name = self.expect('IDENTIFIER').value
         #self.expect('RCOMMENT')
         decls=self.parse_declarations()
-        stmts=self.parse_statements()
+        stmts=self.parse_updates()
 
         self.indentator.dedent()
         if (self.errors == 1):
@@ -100,64 +108,53 @@ class Parser:
 
     def parse_declaration(self):
 
-        #TODO: gérer les tableaux et les autres type que le int
 
         val = None
         self.indentator.indent('Parsing declaration')
         self.accept_it()
+        name = self.expect('IDENTIFIER').value
+        typ = self.show_next().kind
+        if typ in self.TYPE:
 
-        if self.show_next().kind in self.TYPE:
-            typ = self.show_next().kind
             self.accept_it()
-            name = self.expect('IDENTIFIER').value
-            if self.show_next().kind == 'ASSIGN':
+            self.expect('INTEGER_LIT')
+            if self.show_next().kind in self.TYPE_ACTION :
                 self.accept_it()
-                val = self.expect('INTEGER_LIT').value
+                valx = self.expect('INTEGER_LIT').value
+                valy = self.expect('INTEGER_LIT').value
 
             print("Declaration de la variable:",name,"de type",typ,"\n")
-
-
-
-        """ CAS DES TABLEAUX
-
-        if self.show_next().kind == 'LBRACKET':
-            self.accept_it()
-            val = self.expect('INTEGER_LIT').value
-            self.expect('RBRACKET')
-
-        while(self.show_next().kind == 'COMMA'):
-            self.accept_it()
-            self.expect('IDENTIFIER')
-            if self.show_next().kind == 'LBRACKET':
-                self.accept_it()
-                self.expect('INTEGER_LIT')
-                self.expect('RBRACKET')
-        """
 
         self.indentator.dedent()
         return(Declaration(self.ast, name,typ,val))
 
 
-    def parse_statements(self):
+    def parse_updates(self):
         tab = []
         self.indentator.indent('Parsing Statements')
-        while(self.show_next().kind in self.STATEMENT_STARTERS):
-            print("*********PARSING STATEMENT********\n")
-            tab.append(self.parse_statement())
+
+        while(self.show_next().kind == 'CHANGE'):
+
+            print("*********PARSING UPDATE********\n")
+
+            self.parse_update()
+            tab.append(self.parse_update())
 
 
-            self.parse_statement()
         self.indentator.dedent()
         return tab
 
-    def parse_statement(self):
-        self.indentator.indent('Parsing Statement')
-        next = self.show_next().kind
-        if next == 'IF':
-            self.parse_if()
-        elif next == 'IDENTIFIER':
-            print(">>>> PARSING OPERATION\n")
-            self.parse_operation()
+    def parse_update(self):
+        self.indentator.indent('Parsing Update')
+        self.accept_it()
+        name = self.expect('IDENTIFIER').value
+        if self.show_next().kind in self.TYPE_ACTION:
+            self.accept_it()
+            coordx = self.expect("INTEGER_LIT")
+            coordy = self.expect("INTEGER_LIT")
+
+        return update(self.ast,name,coordx,coordy)
+
 
 
     def parse_if(self):
@@ -165,11 +162,16 @@ class Parser:
         self.parse_expression()
         return If(self.ast)
 
+    def parse_while(self):
+        self.accept_it()
+        self.parse_expression()
+        return While(self.ast)
+
+
     def parse_expression(self):
         self.indentator.indent('Parsing Expression')
 
         print(">>>> PARSING EXPRESSION\n")
-
 
         self.expect('IDENTIFIER')
         next = self.show_next().kind
@@ -179,16 +181,20 @@ class Parser:
                 self.accept_it()
                 print("fin de la condition\n")
 
-
         self.indentator.dedent()
 
     def parse_conjunction(self):
+        #TODO: define conjunction
         pass
+
     def parse_relation(self):
+        #TODO: define relation
         pass
+
     def parse_operation(self):
         self.accept_it()
         self.expect('ASSIGN')
+
         if self.show_next().kind in ['INTEGER_LIT','IDENTIFIER']:
             self.accept_it()
             next = self.show_next().kind
@@ -199,8 +205,10 @@ class Parser:
                 self.accept_it()
             elif next == "DIV":
                 self.accept_it()
+
         if self.show_next().kind in ['IDENTIFIER','INTEGER_LIT']:
             self.accept_it()
+
         print("Opération parsée\n")
 
         self.indentator.dedent()
