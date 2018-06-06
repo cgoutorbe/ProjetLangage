@@ -27,6 +27,10 @@ if __name__ == '__main__':
     ast = AST()
     verbose = True
     parser = Parser(ast,verbose)
+    visitor = Visitor(ast)
+
     parser.parse(tokens)
 
     print(ast)
+    c = Context(ast)
+    print(c)

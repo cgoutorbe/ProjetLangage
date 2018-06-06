@@ -94,26 +94,28 @@ class Parser:
             print('WARNING: ' + str(self.errors) + ' errors found!')
         else:
             print('parser: syntax analysis successful!')
-        return Program(name,decls,stmts)
+        return Program("nom",decls,stmts)
 
 
     def parse_declarations(self):
         tab=[]
         self.indentator.indent('Parsing Declarations')
-        while(self.show_next().kind == 'NEW'):
+        while(len(self.tokens) > 0 and self.show_next().kind == 'NEW'):
             print("*********PARSING DECLARATION********\n")
+            #TODO: si on fait decl up decl2 la decl2 n'est pas prise en compte
             tab.append(self.parse_declaration())
         self.indentator.dedent()
         return tab
 
     def parse_declaration(self):
 
-
         val = None
         self.indentator.indent('Parsing declaration')
         self.accept_it()
         name = self.expect('IDENTIFIER').value
         typ = self.show_next().kind
+        pos = self.show_next().position
+
         if typ in self.TYPE:
 
             self.accept_it()
@@ -124,48 +126,57 @@ class Parser:
                 valy = self.expect('INTEGER_LIT').value
 
             print("Declaration de la variable:",name,"de type",typ,"\n")
-
-        self.indentator.dedent()
-        return(Declaration(self.ast, name,typ,val))
+        val = (valx,valy)
+        #self.indentator.dedent()
+        return(Declaration(self.ast, name,typ,val,pos))
 
 
     def parse_updates(self):
         tab = []
-        self.indentator.indent('Parsing Statements')
+        #self.indentator.indent('Parsing Updates')
 
-        while(self.show_next().kind == 'CHANGE'):
+        while(len(self.tokens) > 0 and self.show_next().kind == 'CHANGE'):
 
             print("*********PARSING UPDATE********\n")
 
-            self.parse_update()
-            tab.append(self.parse_update())
+            up = self.parse_update()
+            print("UPDATE-OVER")
+            tab.append(up)
+            self.indentator.dedent()
+
+        print("----------------------------------> QUIT UPDATES")
 
 
-        self.indentator.dedent()
         return tab
 
     def parse_update(self):
         self.indentator.indent('Parsing Update')
         self.accept_it()
         name = self.expect('IDENTIFIER').value
+        pos = self.show_next().position
+        print(name,"============")
+
         if self.show_next().kind in self.TYPE_ACTION:
             self.accept_it()
             coordx = self.expect("INTEGER_LIT")
             coordy = self.expect("INTEGER_LIT")
 
-        return update(self.ast,name,coordx,coordy)
+
+        return update(self.ast,name,coordx,coordy,pos)
 
 
 
     def parse_if(self):
         self.accept_it()
         self.parse_expression()
-        return If(self.ast)
+        pos = self.show_next().position
+        return If(self.ast,pos)
 
     def parse_while(self):
         self.accept_it()
         self.parse_expression()
-        return While(self.ast)
+        pos = self.show_next().position
+        return While(self.ast,pos)
 
 
     def parse_expression(self):
@@ -174,6 +185,7 @@ class Parser:
         print(">>>> PARSING EXPRESSION\n")
 
         self.expect('IDENTIFIER')
+        pos = self.show_next().position
         next = self.show_next().kind
         if next in ['EQ','NEQ','DBAR','LTE','LT','GT','GTE','DAMPERSAND']:
             self.accept_it()
@@ -194,6 +206,7 @@ class Parser:
     def parse_operation(self):
         self.accept_it()
         self.expect('ASSIGN')
+        pos = self.show_next().position
 
         if self.show_next().kind in ['INTEGER_LIT','IDENTIFIER']:
             self.accept_it()

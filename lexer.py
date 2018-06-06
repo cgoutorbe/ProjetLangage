@@ -73,7 +73,7 @@ class Lexer:
                         if match:
                             data = match.group(0)
                             if tag:
-                                print('===========> ',tag)
+                                print('===========> ',tag,lineNumber)
                                 token = Token(tag, data, [lineNumber, position])
                                 self.tokens.append(token)
                             break
