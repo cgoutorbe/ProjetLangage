@@ -1,4 +1,10 @@
 import sys
+MAG = "\u001b[35;1m"
+BLU = "\u001b[34;1m"
+YLW = "\u001b[93;1m"
+RED = "\u001b[31;1m"
+RST = "\u001b[0m"
+
 class AST:
 
     TYPE_PLANE = ['DIVE_BOMBER','TORPEDO_PLANE','FIGHTER_PLANE','BOMBER_PLANE','OBS_PLANE','PATROL_PLANE','TRANSPORT']
@@ -38,7 +44,7 @@ class AST:
         return ''.join(res)
 
     def __repr__(self):
-        print("==== Représentation de l'arbre de syntaxe Abstraite ====\n")
+        print("==== Représentation de l'arbre de Syntaxe Abstraite ====\n")
         i=0
 
         res = []
@@ -46,9 +52,9 @@ class AST:
         listTextUp =[]
 
         for obj in self.listDecl:
-            listText.append(obj.name+">>>"+obj.type+'at '+str(obj.val))
+            listText.append(MAG + obj.name+ RST + ">>> "+ RED + obj.type+ RST +' at '+ YLW + str(obj.val) + RST)
         for up in self.listUp:
-                listTextUp.append("UPDATE >>>"+up.name)
+                listTextUp.append(BLU + "UPDATE" + RST + " >>> " + MAG +up.name + RST)
 
         print(self.borderedDecl(listText))
         print(self.borderedDecl(listTextUp))
@@ -74,7 +80,7 @@ class Context():
     def __repr__(self):
         #TODO: printer le nouvel AST de maniere élégante
         #TODO: parcourir le dictionnaire pour printer tous les sous arbres correspondants aux objets
-        print("==== Représentation de l'arbre de syntaxe Abstraite Décoré ====\n")
+        print("==== Représentation de l'arbre de Syntaxe Abstraite Décoré ====\n")
         for obj in self.ast.listDeclName:
             print(self.DicoAST[obj])
             print("\t\t =======\n")
@@ -94,11 +100,11 @@ class Context():
 
     def verifDeclaration(self):
         #vérifie que les variables sont déclarée avant d'être UPDATE
-        print("test de la bonne déclaration des variables")
+        print("Test de la bonne déclaration des variables")
         for obj in self.ast.listDecl:
-            print("obj ---->",obj.name,"<")
+            print(RED,"obj ---->",RST,MAG,obj.name,RST,"<")
             for up in self.ast.listUp:
-                print("up------>",up.name,"<")
+                print(BLU,"up ----->",RST,MAG,up.name,RST,"<")
                 if obj.name == up.name and obj.position > up.position:
                     print("ERROR: object updated before being declared")
                     sys.exit(1)
@@ -165,9 +171,9 @@ class SubTree():
 
 
         for obj in self.listDecl:
-            listText.append(obj.name+">>>"+obj.type+'at '+str(obj.val))
+            listText.append(MAG + obj.name+ RST + ">>> "+ RED + obj.type+ RST + ' at '+ YLW + str(obj.val) + RST)
         for up in self.listUp:
-            listTextUp.append("UPDATE >>>"+up.name)
+            listTextUp.append(BLU + "UPDATE >>> "+ RST + MAG + up.name + RST)
         liste = listText + listTextUp
 
         print(self.borderedDecl(liste))

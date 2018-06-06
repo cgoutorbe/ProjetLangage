@@ -4,17 +4,6 @@ class PrettyPrinter:
     #afin de retrouver le code en focntion des values de l'AST
 
 
-
-
-
-
-
-
-
-
-
-
-
     def __init__(self,ast):
 
         self.ast = ast
@@ -50,8 +39,8 @@ class PrettyPrinter:
 
 
         for obj in self.ast.listDecl:
+            codeGen.write("BAH-DEH-TAHN "+  obj.name + self.dicoReg[obj.type] +  obj.nb +' '+ self.dicoReg[obj.action] + str(obj.val[0])+' '+str(obj.val[1])+ '\n')
 
-            codeGen.write("BAH-DEH-TAHN "+ obj.name + self.dicoReg[obj.type] + obj.nb+' '+ self.dicoReg[obj.action] + str(obj.val[0])+' '+str(obj.val[1])+'\n')
         for obj in self.ast.listUp:
             codeGen.write("THLA-GO-A-NAT-ZAH " + obj.name + self.dicoReg[obj.action]+ ' ' +obj.coordx+' '+obj.coordy+'\n')
 
