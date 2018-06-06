@@ -74,7 +74,11 @@ class Context():
     def __repr__(self):
         #TODO: printer le nouvel AST de maniere élégante
         #TODO: parcourir le dictionnaire pour printer tous les sous arbres correspondants aux objets
-        print(self.DicoAST['trans '])
+        print("==== Représentation de l'arbre de syntaxe Abstraite Décoré ====\n")
+        for obj in self.ast.listDeclName:
+            print(self.DicoAST[obj])
+            print("\t\t =======\n")
+
         return('arbre décoré')
 
     def verifNoDecl(self):
@@ -105,11 +109,14 @@ class Context():
 
 
 
-        for obj in set(self.ast.listDeclName):
+        for obj in set(self.ast.listDecl):
             #set élimine les doublons de déclaration
-            print(">>>>>",obj)
+            print(">>>>>",obj.name)
             #création d'un élément disctinct pour chaque déclaration au nom différent
-            self.DicoAST[obj] = SubTree(self.ast,obj)
+            self.DicoAST[obj.name] = SubTree(self.ast,obj.name+'_tree')
+            #ajout de la déclaration dans le sous arbre nouvellement créé
+            self.DicoAST[obj.name].listDecl.append(obj)
+
         for obj in self.ast.listUp:
             self.DicoAST[obj.name].listUp.append(obj)
 
@@ -128,8 +135,11 @@ class SubTree():
         self.listUp = []
 
     def borderedDecl(self,list):
-
-        width = max(len(s) for s in list)
+    
+        if len(list)>0:
+            width = max(len(s) for s in list)
+        else:
+            width = 0
         res = []
         for s in list:
             res.append('┌' + '─' * width + '┐')
@@ -144,29 +154,33 @@ class SubTree():
         return ''.join(res)
 
 
+
     def __repr__(self):
 
         #représentation du sous arbre
-        print("==== Représentation de l'arbre de syntaxe Abstraite Décoré ====\n")
-        i=0
+
 
         res = []
         listText =[]
         listTextUp =[]
+        liste =[]
         #TODO: Erreur ici -> le sous arbre ne contient pas la declaration de l'objet
         #Puisqu'il a passé les test précédent on peut considérer que une déclaration à été faite et en ajouter une
-        
+
 
         for obj in self.listDecl:
             listText.append(obj.name+">>>"+obj.type+'at '+str(obj.val))
         for up in self.listUp:
             listTextUp.append("UPDATE >>>"+up.name)
+        liste = listText + listTextUp
+        print(len(liste))
 
-        print(self.borderedDecl(listText))
-        print(self.borderedDecl(listTextUp))
+        print(self.borderedDecl(liste))
+        #print(self.borderedDecl(listText))
+        #print(self.borderedDecl(listTextUp))
 
 
-        return("fin de l'arbre de syntaxe abstrait")
+        return("")
 
     """
     def astDeco(self):
