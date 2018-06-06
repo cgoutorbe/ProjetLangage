@@ -119,16 +119,17 @@ class Parser:
         if typ in self.TYPE:
 
             self.accept_it()
-            self.expect('INTEGER_LIT')
+            nb = self.expect('INTEGER_LIT').value
+
             if self.show_next().kind in self.TYPE_ACTION :
-                self.accept_it()
+                action = self.accept_it().kind
                 valx = self.expect('INTEGER_LIT').value
                 valy = self.expect('INTEGER_LIT').value
 
             print("Declaration de la variable:",name,"de type",typ,"\n")
         val = (valx,valy)
         #self.indentator.dedent()
-        return(Declaration(self.ast, name,typ,val,pos))
+        return(Declaration(self.ast, name,typ,nb,action,val,pos))
 
 
     def parse_updates(self):
@@ -157,12 +158,12 @@ class Parser:
         print(name,"============")
 
         if self.show_next().kind in self.TYPE_ACTION:
-            self.accept_it()
-            coordx = self.expect("INTEGER_LIT")
-            coordy = self.expect("INTEGER_LIT")
+            action = self.accept_it().kind
+            coordx = self.expect("INTEGER_LIT").value
+            coordy = self.expect("INTEGER_LIT").value
 
 
-        return update(self.ast,name,coordx,coordy,pos)
+        return update(self.ast,name,action,coordx,coordy,pos)
 
 
 

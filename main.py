@@ -3,6 +3,7 @@ import argparse
 from lexer import Lexer
 from parser import Parser
 from AST import *
+from pretty import PrettyPrinter
 
 
 if __name__ == '__main__':
@@ -34,3 +35,5 @@ if __name__ == '__main__':
     print(ast)
     c = Context(ast)
     print(c)
+
+    pretty = PrettyPrinter(ast)
